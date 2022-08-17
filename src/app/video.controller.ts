@@ -7,21 +7,21 @@ import {
   Post,
   Delete,
 } from '@nestjs/common';
-import { AppService } from './app.service';
+import { VideoService } from './video.service';
 import { Video } from './video.entity';
 import { CreateVideoDto } from '../dto/create-video.dto';
 import { UpdateVideoDto } from '../dto/update-video.dto';
 
 @Controller()
-export class AppController {
-  constructor(private appService: AppService) {}
+export class VideoController {
+  constructor(private appService: VideoService) {}
 
-  @Post('create')
+  @Post()
   createVideo(@Body() createVideoDto: CreateVideoDto): Promise<Video> {
     return this.appService.createVideo(createVideoDto);
   }
 
-  @Get('search')
+  @Get()
   searchVideo(@Body() searchTerm: string) {
     return this.appService.searchVideos(searchTerm);
   }

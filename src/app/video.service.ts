@@ -6,7 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class AppService {
+export class VideoService {
   constructor(
     @InjectRepository(Video)
     private videoRepository: Repository<Video>,
