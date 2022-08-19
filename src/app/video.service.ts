@@ -4,6 +4,7 @@ import { CreateVideoDto } from '../dto/create-video.dto';
 import { UpdateVideoDto } from '../dto/update-video.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { SearchVideoDto } from '../dto/search-video.dto';
 
 @Injectable()
 export class VideoService {
@@ -24,16 +25,31 @@ export class VideoService {
     return video;
   }
 
-  async searchVideos(searchTerm: string): Promise<Video[]> {
+  async searchVideos(searchVideoDto: SearchVideoDto): Promise<Video[]> {
+    const { title, year, location } = searchVideoDto;
+
     const query = this.videoRepository.createQueryBuilder('video');
 
-    query.andWhere(
-      '(LOWER(video.title) LIKE LOWER(:searchTerm))',
-      // eslint-disable-next-line prettier/prettier
-      { search: `%${searchTerm}%` },
-    );
+    if (title) {
+      query.andWhere(
+        '(LOWER(video.title) LIKE LOWER(:title))',
+        // eslint-disable-next-line prettier/prettier
+        { title: `%${title}%` },
+      );
+    }
+    if (year) {
+      query.andWhere('(video.year = :year)', { year });
+    }
+
+    if (location) {
+      query.andWhere('(video.location = :location)', { location });
+    }
 
     return await query.getMany();
+  }
+
+  async allVideos(): Promise<Video[]> {
+    return this.videoRepository.find();
   }
 
   async getVideoById(id: string): Promise<Video> {

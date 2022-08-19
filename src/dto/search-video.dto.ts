@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class UpdateVideoDto {
+export class SearchVideoDto {
   @IsOptional()
   @IsString()
   title?: string;
