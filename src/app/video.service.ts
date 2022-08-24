@@ -5,17 +5,20 @@ import { UpdateVideoDto } from '../dto/update-video.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SearchVideoDto } from '../dto/search-video.dto';
+import { VideoPuppeteer } from './video.puppeteer';
 
 @Injectable()
 export class VideoService {
   constructor(
     @InjectRepository(Video)
     private videoRepository: Repository<Video>,
+    private videoPuppeteer: VideoPuppeteer,
   ) {}
 
   async createVideo(createVideoDto: CreateVideoDto): Promise<Video> {
     //scraping is logic added here and passed
     const { title, year, location } = createVideoDto;
+    const puppet = await this.videoPuppeteer.puppet(title);
     const video = this.videoRepository.create({
       title,
       year,
@@ -26,6 +29,7 @@ export class VideoService {
   }
 
   async searchVideos(searchVideoDto: SearchVideoDto): Promise<Video[]> {
+    //adding other search terms after scraping
     const { title, year, location } = searchVideoDto;
 
     const query = this.videoRepository.createQueryBuilder('video');
