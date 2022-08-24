@@ -10,5 +10,8 @@ export class Video {
   year: string;
   @Column()
   location: string;
-  //other fields will be scraped to add here
+  @Column()
+  director: string[];
+  @Column()
+  stars: string[];
 }

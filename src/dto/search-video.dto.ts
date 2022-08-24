@@ -11,4 +11,12 @@ export class SearchVideoDto {
   @IsOptional()
   @IsString()
   location?: string;
+
+  @IsOptional()
+  @IsString()
+  director?: string;
+
+  @IsOptional()
+  @IsString()
+  star?: string;
 }

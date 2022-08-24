@@ -16,13 +16,14 @@ export class VideoService {
   ) {}
 
   async createVideo(createVideoDto: CreateVideoDto): Promise<Video> {
-    //scraping is logic added here and passed
     const { title, year, location } = createVideoDto;
-    const puppet = await this.videoPuppeteer.puppet(title);
+    const { director, stars } = await this.videoPuppeteer.puppet(title);
     const video = this.videoRepository.create({
       title,
       year,
       location,
+      director,
+      stars,
     });
     await this.videoRepository.save(video);
     return video;
@@ -30,7 +31,7 @@ export class VideoService {
 
   async searchVideos(searchVideoDto: SearchVideoDto): Promise<Video[]> {
     //adding other search terms after scraping
-    const { title, year, location } = searchVideoDto;
+    const { title, year, location, director, star } = searchVideoDto;
 
     const query = this.videoRepository.createQueryBuilder('video');
 
@@ -47,6 +48,22 @@ export class VideoService {
 
     if (location) {
       query.andWhere('(video.location = :location)', { location });
+    }
+
+    if (director) {
+      query.andWhere(
+        '(LOWER(video.director) LIKE LOWER(:director))',
+        // eslint-disable-next-line prettier/prettier
+        { director: `%${director}%` },
+      );
+    }
+
+    if (star) {
+      query.andWhere(
+        '(LOWER(video.star) LIKE LOWER(:star))',
+        // eslint-disable-next-line prettier/prettier
+        { stars: `%${star}%` },
+      );
     }
 
     return await query.getMany();
